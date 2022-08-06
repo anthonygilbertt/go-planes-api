@@ -64,7 +64,7 @@ func postPlanes(c *gin.Context) {
 }
 
 // getPlanesById locates the plane whose ID value matches the ID
-// parameter sent by the client, then returns that album as a respones.
+// parameter sent by the client, then returns that plane as a respones.
 func getPlaneByID(c *gin.Context) {
 	id := c.Param("id")
 
