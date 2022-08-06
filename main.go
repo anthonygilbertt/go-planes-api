@@ -19,6 +19,10 @@ func getPlanes(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, planes)
 }
 
+func getPlaneById(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, planes)
+}
+
 // planes slice to seed plane data.
 var planes = []plane{
 	{ID: "1", Manufacturer: "Boeing", PlaneName: "777", Year: 2011},
@@ -32,6 +36,8 @@ var planes = []plane{
 func main() {
 	router := gin.Default()
 	router.GET("/planes", getPlanes)
+	router.GET("/planes/:id", getPlaneById)
+	router.POST("/planes", postPlanes)
 
 	router.Run("localhost:8080")
 }
@@ -41,3 +47,33 @@ func main() {
 // create a delete route
 
 // Prepare a resp to get all of the planes(items)
+
+// postPlanes adds an plane from JSON received in the request body.
+func postPlanes(c *gin.Context) {
+	var newPlane plane
+
+	// Call BindJSON to bind the received JSON to
+	// newPlane.
+	if err := c.BindJSON(&newPlane); err != nil {
+		return
+	}
+
+	// Add the new plane to the slice.
+	planes = append(planes, newPlane)
+	c.IndentedJSON(http.StatusCreated, newPlane)
+}
+
+// getPlanesById locates the plane whose ID value matches the ID
+// parameter sent by the client, then returns that album as a respones.
+func getPlaneByID(c *gin.Context) {
+	id := c.Param("id")
+
+	// Loop over the list of planes, looking for a plane whose ID value matches the parameter.
+	for _, a := range planes {
+		if a.ID == id {
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "plane not found"})
+}
